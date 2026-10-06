@@ -12,65 +12,65 @@ local Menu = Library:CreateMenu({
 })
 
 local Tabs = {
-    Main = Menu:AddTab("기본"),
-    Select = Menu:AddTab("선택"),
-    Input = Menu:AddTab("입력"),
-    Settings = Menu:AddTab("관리"),
+    Main = Menu:AddTab("Main"),
+    Select = Menu:AddTab("Selection"),
+    Input = Menu:AddTab("Input"),
+    Settings = Menu:AddTab("Management"),
 }
 
-local Basic = Tabs.Main:AddLeftGroupbox("토글과 슬라이더")
-Basic:AddToggle("Enabled", { Text = "활성화", Default = true, Tooltip = "토글 값을 변경합니다." })
+local Basic = Tabs.Main:AddLeftGroupbox("Toggles and Sliders")
+Basic:AddToggle("Enabled", { Text = "Enabled", Default = true, Tooltip = "Change the toggle value." })
     :AddKeyPicker("EnabledKey", { Default = "F8", Mode = "Toggle", SyncToggleState = true })
 Basic:AddCheckbox("Checkbox", {
-    Text = "체크박스", Default = false,
-    Callback = function(value) print("체크박스:", value) end,
+    Text = "Checkbox", Default = false,
+    Callback = function(value) print("Checkbox:", value) end,
 })
-Basic:AddSlider("Amount", { Text = "수량", Default = 50, Min = 0, Max = 100, Rounding = 0, Suffix = "%" })
-Basic:AddSlider("Speed", { Text = "속도", Default = 1, Min = 0.1, Max = 5, Rounding = 2 })
-Basic:AddToggle("Advanced", { Text = "추가 옵션 표시", Default = false })
+Basic:AddSlider("Amount", { Text = "Amount", Default = 50, Min = 0, Max = 100, Rounding = 0, Suffix = "%" })
+Basic:AddSlider("Speed", { Text = "Speed", Default = 1, Min = 0.1, Max = 5, Rounding = 2 })
+Basic:AddToggle("Advanced", { Text = "Show advanced options", Default = false })
 
 local Advanced = Basic:AddDependencyBox()
-Advanced:AddSlider("AdvancedAmount", { Text = "추가 수치", Default = 10, Min = 1, Max = 50, Rounding = 0 })
+Advanced:AddSlider("AdvancedAmount", { Text = "Advanced amount", Default = 10, Min = 1, Max = 50, Rounding = 0 })
 Advanced:SetupDependencies({ { Toggles.Advanced, true } })
 
-local Actions = Tabs.Main:AddRightGroupbox("버튼과 상태")
-local Status = Actions:AddLabel("상태: 준비")
+local Actions = Tabs.Main:AddRightGroupbox("Buttons and Status")
+local Status = Actions:AddLabel("Status: Ready")
 Actions:AddButton({
-    Text = "현재 값 확인",
+    Text = "Show current values",
     Func = function()
-        print("활성화:", Toggles.Enabled.Value)
-        print("수량:", Options.Amount.Value)
-        print("속도:", Options.Speed.Value)
-        Status:SetText("상태: 값 확인 완료")
+        print("Enabled:", Toggles.Enabled.Value)
+        print("Amount:", Options.Amount.Value)
+        print("Speed:", Options.Speed.Value)
+        Status:SetText("Status: Values checked")
     end,
-}):AddButton({ Text = "알림", Func = function() Menu:Notify({ Text = "버튼이 눌렸습니다.", Duration = 3 }) end })
+}):AddButton({ Text = "Notify", Func = function() Menu:Notify({ Text = "Button clicked.", Duration = 3 }) end })
 Actions:AddButton({
-    Text = "두 번 클릭", DoubleClick = true, Tooltip = "0.4초 안에 두 번 클릭하세요.",
-    Func = function() Status:SetText("상태: 두 번 클릭 완료") end,
+    Text = "Double click", DoubleClick = true, Tooltip = "Click twice within 0.4 seconds.",
+    Func = function() Status:SetText("Status: Double click confirmed") end,
 })
 local DisabledButton = Actions:AddButton({
-    Text = "잠긴 버튼", Disabled = true, DisabledTooltip = "아래 토글을 켜면 사용할 수 있습니다.",
-    Func = function() Menu:Notify("버튼이 활성화되어 있습니다.") end,
+    Text = "Disabled button", Disabled = true, DisabledTooltip = "Enable the toggle below to use this button.",
+    Func = function() Menu:Notify("The button is enabled.") end,
 })
-Actions:AddToggle("ButtonEnabled", { Text = "버튼 활성화", Default = false })
+Actions:AddToggle("ButtonEnabled", { Text = "Enable button", Default = false })
 Toggles.ButtonEnabled:OnChanged(function(value) DisabledButton:SetDisabled(not value) end)
 Actions:AddDivider()
-Actions:AddLabel("색상"):AddColorPicker("InlineColor", { Default = Color3.fromRGB(255, 180, 90), Transparency = 0 })
+Actions:AddLabel("Color"):AddColorPicker("InlineColor", { Default = Color3.fromRGB(255, 180, 90), Transparency = 0 })
 
 local SearchValues = { "Apple", "Banana", "Cherry", "Grape", "Orange", "Peach", "Pear", "Mango", "Melon" }
-local Dropdowns = Tabs.Select:AddLeftGroupbox("드롭다운")
+local Dropdowns = Tabs.Select:AddLeftGroupbox("Dropdowns")
 Dropdowns:AddDropdown("SingleChoice", {
-    Text = "단일 선택", Values = { "첫 번째", "두 번째", "세 번째" }, Default = 1, AllowNull = false,
+    Text = "Single selection", Values = { "First", "Second", "Third" }, Default = 1, AllowNull = false,
 })
 Dropdowns:AddDropdown("SearchChoice", {
-    Text = "검색 가능한 선택", Values = SearchValues,
+    Text = "Searchable selection", Values = SearchValues,
     Default = "Apple", Searchable = true, MaxVisibleDropdownItems = 5,
 })
-Dropdowns:AddDropdown("MultiChoice", { Text = "여러 항목 선택", Values = { "A", "B", "C", "D" }, Default = { "A", "C" }, Multi = true })
-Dropdowns:AddDropdown("DictionaryChoice", { Text = "표시 이름과 값 분리", Values = { low = "낮음", medium = "보통", high = "높음" }, Default = "medium" })
-Dropdowns:AddDropdown("DisabledChoice", { Text = "일부 항목 비활성화", Values = { "사용 가능", "잠김" }, Default = "사용 가능", DisabledValues = { "잠김" } })
+Dropdowns:AddDropdown("MultiChoice", { Text = "Multiple selection", Values = { "A", "B", "C", "D" }, Default = { "A", "C" }, Multi = true })
+Dropdowns:AddDropdown("DictionaryChoice", { Text = "Custom display names", Values = { low = "Low", medium = "Medium", high = "High" }, Default = "medium" })
+Dropdowns:AddDropdown("DisabledChoice", { Text = "Disabled items", Values = { "Available", "Locked" }, Default = "Available", DisabledValues = { "Locked" } })
 Dropdowns:AddButton({
-    Text = "검색 목록 바꾸기",
+    Text = "Change search list",
     Func = function()
         Options.SearchChoice:SetValues({ "Alpha", "Beta", "Gamma", "Delta" })
         Options.SearchChoice:SetValue("Beta")
@@ -78,78 +78,78 @@ Dropdowns:AddButton({
 })
 
 local Pickers = Tabs.Select:AddRightTabbox()
-local Colors = Pickers:AddTab("색상")
-local Keys = Pickers:AddTab("단축키")
-Colors:AddColorPicker("Color", { Text = "색상 선택", Default = Color3.fromRGB(85, 135, 255), Transparency = 0.2 })
-Colors:AddColorPicker("SecondColor", { Text = "다른 색상", Default = Color3.fromRGB(140, 220, 170) })
-Colors:AddButton({ Text = "색상을 초록으로", Func = function() Options.Color:SetValueRGB(Color3.fromRGB(0, 255, 140), 0.1) end })
-Keys:AddKeyPicker("PressKey", { Text = "누를 때 실행", Default = "F6", Mode = "Press", Callback = function() print("단축키 실행") end })
-Keys:AddKeyPicker("HoldKey", { Text = "누르고 있는 동안", Default = "F7", Mode = "Hold" })
-Keys:AddKeyPicker("ToggleKey", { Text = "켜기 / 끄기", Default = "F9", Mode = "Toggle" })
-Keys:AddLabel("버튼을 클릭해 키를 지정하고, 우클릭해 동작 방식을 변경하세요.")
+local Colors = Pickers:AddTab("Colors")
+local Keys = Pickers:AddTab("Keybinds")
+Colors:AddColorPicker("Color", { Text = "Color picker", Default = Color3.fromRGB(85, 135, 255), Transparency = 0.2 })
+Colors:AddColorPicker("SecondColor", { Text = "Another color", Default = Color3.fromRGB(140, 220, 170) })
+Colors:AddButton({ Text = "Set color to green", Func = function() Options.Color:SetValueRGB(Color3.fromRGB(0, 255, 140), 0.1) end })
+Keys:AddKeyPicker("PressKey", { Text = "Run on press", Default = "F6", Mode = "Press", Callback = function() print("Keybind triggered") end })
+Keys:AddKeyPicker("HoldKey", { Text = "While held", Default = "F7", Mode = "Hold" })
+Keys:AddKeyPicker("ToggleKey", { Text = "Toggle on / off", Default = "F9", Mode = "Toggle" })
+Keys:AddLabel("Click a button to assign a key, or right click to change its mode.")
 
-local Inputs = Tabs.Input:AddLeftGroupbox("입력")
-Inputs:AddInput("Text", { Text = "텍스트", Default = "Hello", Placeholder = "내용을 입력하세요" })
-Inputs:AddInput("Number", { Text = "숫자", Default = "123", Numeric = true, Finished = true })
-Inputs:AddInput("FinishedText", { Text = "입력 완료 시 적용", Default = "", Finished = true })
-Inputs:AddInput("MultiLine", { Text = "여러 줄", Default = "첫 번째 줄\n두 번째 줄", MultiLine = true })
+local Inputs = Tabs.Input:AddLeftGroupbox("Inputs")
+Inputs:AddInput("Text", { Text = "Text", Default = "Hello", Placeholder = "Enter text here" })
+Inputs:AddInput("Number", { Text = "Number", Default = "123", Numeric = true, Finished = true })
+Inputs:AddInput("FinishedText", { Text = "Apply on finish", Default = "", Finished = true })
+Inputs:AddInput("MultiLine", { Text = "Multiple lines", Default = "First line\nSecond line", MultiLine = true })
 
-local Output = Tabs.Input:AddRightGroupbox("표시")
-Output:AddLabel("TextStatus", { Text = "입력값: Hello" })
-Output:AddParagraph("설명", "컨트롤의 값은 Options 또는 Toggles에서 읽을 수 있습니다.")
+local Output = Tabs.Input:AddRightGroupbox("Output")
+Output:AddLabel("TextStatus", { Text = "Input: Hello" })
+Output:AddParagraph("Description", "Read control values from Options or Toggles.")
 Output:AddButton({
-    Text = "값을 코드로 변경",
+    Text = "Change values from code",
     Func = function()
         Toggles.Enabled:SetValue(false)
         Options.Amount:SetValue(75)
-        Options.Text:SetValue("코드에서 변경했습니다.")
+        Options.Text:SetValue("Changed from code.")
         Options.MultiChoice:SetValue({ A = true, D = true })
         Options.PressKey:SetValue({ "F6", "Press" })
     end,
 })
 
-local Appearance = Tabs.Settings:AddLeftGroupbox("화면")
-Appearance:AddToggle("Animation", { Text = "전환 애니메이션", Default = true })
-Appearance:AddSlider("AnimationDuration", { Text = "전환 시간", Default = 0.1, Min = 0.05, Max = 0.6, Rounding = 2, Suffix = "초" })
-Appearance:AddColorPicker("Accent", { Text = "강조 색상", Default = Color3.fromRGB(85, 135, 255) })
+local Appearance = Tabs.Settings:AddLeftGroupbox("Appearance")
+Appearance:AddToggle("Animation", { Text = "Transition animation", Default = true })
+Appearance:AddSlider("AnimationDuration", { Text = "Transition duration", Default = 0.1, Min = 0.05, Max = 0.6, Rounding = 2, Suffix = "s" })
+Appearance:AddColorPicker("Accent", { Text = "Accent color", Default = Color3.fromRGB(85, 135, 255) })
 
-local Config = Tabs.Settings:AddRightGroupbox("설정 저장")
-Config:AddInput("ConfigName", { Text = "파일 이름", Default = "default", Finished = true, IgnoreConfig = true })
+local Config = Tabs.Settings:AddRightGroupbox("Configuration")
+Config:AddInput("ConfigName", { Text = "File name", Default = "default", Finished = true, IgnoreConfig = true })
 Config:AddButton({
-    Text = "저장",
+    Text = "Save",
     Func = function()
         local ok, message = pcall(function() Menu:SaveConfig(Options.ConfigName.Value) end)
-        Menu:Notify(ok and "저장했습니다." or tostring(message))
+        Menu:Notify(ok and "Configuration saved." or tostring(message))
     end,
 }):AddButton({
-    Text = "불러오기",
+    Text = "Load",
     Func = function()
         local ok, loaded, message = pcall(function() return Menu:LoadConfigFile(Options.ConfigName.Value) end)
-        Menu:Notify(ok and loaded and "불러왔습니다." or tostring(ok and message or loaded))
+        Menu:Notify(ok and loaded and "Configuration loaded." or tostring(ok and message or loaded))
     end,
 })
 
 local defaults
-Config:AddButton({ Text = "기본값 복원", Func = function()
+Config:AddButton({ Text = "Restore defaults", Func = function()
     Options.SearchChoice:SetValues(SearchValues)
     Menu:LoadConfig(defaults)
 end })
-Config:AddButton({ Text = "UI 제거", Func = function() Menu:Unload() end })
+Config:AddButton({ Text = "Unload UI", Func = function() Menu:Unload() end })
 
-Toggles.Enabled:OnChanged(function(value) print("활성화:", value) end)
-Options.Amount:OnChanged(function(value) print("수량:", value) end)
-Options.Speed:OnChanged(function(value) print("속도:", value) end)
-Options.SingleChoice:OnChanged(function(value) print("단일 선택:", value) end)
-Options.DictionaryChoice:OnChanged(function(value) print("선택 값:", value) end)
-Options.MultiChoice:OnChanged(function(value) for key in pairs(value) do print("선택한 항목:", key) end end)
-Options.Color:OnChanged(function(color, transparency) print("색상:", color, "투명도:", transparency) end)
-Options.HoldKey:OnClick(function(value) print("누르고 있음:", value) end)
-Options.ToggleKey:OnClick(function(value) print("단축키 상태:", value) end)
-Options.PressKey:OnChanged(function(value) print("지정 키:", value, Options.PressKey.Mode) end)
-Options.Text:OnChanged(function(value) Options.TextStatus:SetText("입력값: " .. value) end)
+Toggles.Enabled:OnChanged(function(value) print("Enabled:", value) end)
+Options.Amount:OnChanged(function(value) print("Amount:", value) end)
+Options.Speed:OnChanged(function(value) print("Speed:", value) end)
+Options.SingleChoice:OnChanged(function(value) print("Single selection:", value) end)
+Options.DictionaryChoice:OnChanged(function(value) print("Selected value:", value) end)
+Options.MultiChoice:OnChanged(function(value) for key in pairs(value) do print("Selected item:", key) end end)
+Options.Color:OnChanged(function(color, transparency) print("Color:", color, "Transparency:", transparency) end)
+Options.HoldKey:OnClick(function(value) print("Held:", value) end)
+Options.ToggleKey:OnClick(function(value) print("Keybind state:", value) end)
+Options.PressKey:OnChanged(function(value) print("Assigned key:", value, Options.PressKey.Mode) end)
+Options.Text:OnChanged(function(value) Options.TextStatus:SetText("Input: " .. value) end)
 Toggles.Animation:OnChanged(function(value) Menu:SetAnimationEnabled(value) end)
 Options.AnimationDuration:OnChanged(function(value) Menu:SetAnimationDuration(value) end)
 Options.Accent:OnChanged(function(value) Menu:SetAccent(value) end)
-Menu:OnUnload(function() print("UI 제거됨") end)
+Menu:OnUnload(function() print("UI unloaded") end)
 
 defaults = Menu:GetConfig()
