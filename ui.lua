@@ -775,7 +775,7 @@ function Container:_addButton(settings, root)
         if control:_isDisabled() then return end
         if settings.DoubleClick and (not control.LastClick or os.clock() - control.LastClick > 0.4) then
             control.LastClick = os.clock()
-            control.Button.Text = "한 번 더 클릭"
+            control.Button.Text = "Click again"
             task.delay(0.4, function()
                 if not control.Menu.Destroyed and control.Button.Parent and control.LastClick then
                     control.Button.Text = settings.Text or "Button"
@@ -1012,7 +1012,7 @@ function Container:AddDropdown(id, settings)
                 table.insert(labels, entry.Label)
             end
         end
-        self.Button.Text = #labels > 0 and table.concat(labels, ", ") or (settings.Placeholder or "선택")
+        self.Button.Text = #labels > 0 and table.concat(labels, ", ") or (settings.Placeholder or "Select")
         self.Button.Active = not self:_isDisabled()
         self.Button.TextTransparency = self:_isDisabled() and 0.5 or 0
         for key, item in pairs(self.Items or {}) do
@@ -1045,7 +1045,7 @@ function Container:AddDropdown(id, settings)
         local frame = self.Menu:_openPopup(self, Vector2.new(math.max(180, math.min(320, self.Main.AbsoluteSize.X)),
             math.max(48, count * 34 + searchHeight + 16)), function() self.Items = nil end)
         local search
-        if self.Searchable then search = inputBox(self.Menu, frame, { Name = "Search", PlaceholderText = "검색",
+        if self.Searchable then search = inputBox(self.Menu, frame, { Name = "Search", PlaceholderText = "Search",
             Position = UDim2.fromOffset(8, 8), Size = UDim2.new(1, -16, 0, 30), ZIndex = 101 }) end
         local list = create("ScrollingFrame", { Name = "Values", Position = UDim2.fromOffset(8, 8 + searchHeight),
             Size = UDim2.new(1, -16, 1, -16 - searchHeight), BackgroundTransparency = 1, BorderSizePixel = 0,
@@ -1286,7 +1286,7 @@ function Container:_addColorPicker(id, settings, root)
             end
             if alpha then
                 alphaFill.Size = UDim2.fromScale(self.Transparency, 1)
-                alphaLabel.Text = "투명도 " .. math.floor(self.Transparency * 100 + 0.5) .. "%"
+                alphaLabel.Text = "Transparency " .. math.floor(self.Transparency * 100 + 0.5) .. "%"
             end
         end
         self.Menu:_popupConnect(sv.InputBegan, function(input)
@@ -1488,7 +1488,7 @@ end
 
 function Menu:LoadConfig(source)
     local ok, config = pcall(HttpService.JSONDecode, HttpService, source)
-    if not ok or type(config) ~= "table" or type(config.Values) ~= "table" then return false, "잘못된 설정 파일" end
+    if not ok or type(config) ~= "table" or type(config.Values) ~= "table" then return false, "Invalid configuration file" end
     for id, item in pairs(config.Values) do
         local control = self.Options[id] or self.Toggles[id]
         if control and type(item) == "table" and item.Type == control.Type and not control.Settings.IgnoreConfig then
@@ -1521,7 +1521,7 @@ end
 function Menu:LoadConfigFile(name)
     local path = self:_configPath(name)
     assert(readfile and isfile, "File functions are unavailable")
-    if not isfile(path) then return false, "설정 파일이 없습니다" end
+    if not isfile(path) then return false, "Configuration file not found" end
     return self:LoadConfig(readfile(path))
 end
 
